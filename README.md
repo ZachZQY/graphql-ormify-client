@@ -5,16 +5,16 @@
 ## ✨ 特性
 
 - �� **类型安全**: 完整的 TypeScript 支持
-- �� **灵活查询构建**: 支持复杂嵌套查询、别名、参数、指令
-- �� **跨平台兼容**: 支持微信小程序、Web 浏览器和 Node.js
+- 🏗️ **灵活查询构建**: 支持复杂嵌套查询、别名、参数、指令
+-  **跨平台兼容**: 支持微信小程序、Web 浏览器和 Node.js
 - ⚡ **高性能**: 优化的查询生成和执行
 - 🐛 **调试友好**: 内置调试模式和请求监听
 - 📦 **轻量级**: 无外部依赖
-- �� **双重模式**: 支持查询构建器和原始查询字符串
-- ��️ **分层架构**: 清晰的代码复用结构
+-  **双重模式**: 支持查询构建器和原始查询字符串
+- ️ **分层架构**: 清晰的代码复用结构
 - 🔐 **动态认证**: 支持运行时修改请求头和认证信息
-- �� **请求监控**: 完整的请求拦截和监听机制
-- �� **Hasura 集成**: 专门的 HasuraGraphqlClient 类
+-  **请求监控**: 完整的请求拦截和监听机制
+-  **Hasura 集成**: 专门的 HasuraGraphqlClient 类
 
 ## 🚀 快速开始
 
@@ -142,13 +142,13 @@ new GraphQLClient(config: GraphQLClientConfig)
 - `find<TData, TAggregate>(params): Promise<{list: TData[], aggregate: TAggregate}>` - 分页查询
 - `aggregate<T>(params): Promise<T>` - 聚合查询
 
-## �� 支持的环境
+##  支持的环境
 
 - ✅ **微信小程序**: 使用 `wx.request` API
 - ✅ **Web 浏览器**: 使用 `fetch` API
 - ✅ **Node.js**: 使用 `fetch` API (Node.js 18+)
 
-## �� 安装
+##  安装
 
 ```bash
 # npm
@@ -161,13 +161,13 @@ yarn add graphql-ormify-client
 pnpm add graphql-ormify-client
 ```
 
-## �� 相关链接
+##  相关链接
 
 - [GitHub 仓库](https://github.com/ZachZQY/graphql-ormify-client)
 - [问题反馈](https://github.com/ZachZQY/graphql-ormify-client/issues)
 - [示例代码](./examples/)
 
-## �� 许可证
+##  许可证
 
 MIT License - 详见 [LICENSE](LICENSE) 文件
 
@@ -175,9 +175,8 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 欢迎提交 Issue 和 Pull Request！
 
-## �� 联系方式
+##  联系方式
 
 - 作者: ZachZQY
 - 邮箱: zhangquanyinhahaha@163.com
 - 微信: bianzhinet
-# graphql-ormify-client
