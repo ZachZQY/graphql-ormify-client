@@ -47,7 +47,7 @@ async function basicUsageExample() {
       table: 'users',
       args: {
         where: { age: { _gte: 18 } },
-        order_by: { created_at: () => "asc_nulls_first" },
+        order_by: [{ created_at: () => "asc_nulls_first" }, { age: () => "desc_nulls_last" }],
         limit: 10
       },
       datas_fields: ['id', 'name', 'email', 'age']

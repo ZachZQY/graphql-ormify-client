@@ -121,9 +121,10 @@ export type table_bool_exp =
  * 1. field: 字段，如：'id'
  * 2. order_by: 排序方式，如：() => 'asc'
  */
-export interface table_order_by {
+export interface field_order_by {
   [field: string]: () => order_by;
 }
+export type table_order_by = field_order_by | field_order_by[];
 
 // 去重相关
 export type table_select_column = () => string | string[];
