@@ -21,6 +21,19 @@ import {
   DeleteDataByPkParams,
 } from "../../types/client/extend-client/HasuraGraphqlClient";
 
+export type DefaultDataFieldsType = {
+  id: PrimaryKey;
+  [key: string]: any;
+} | null;
+export type DefaultAggregateFieldsType = {
+  count?: number | null;
+  sum?: Record<string, number | null>;
+  avg?: Record<string, number | null>;
+  min?: Record<string, number | null>;
+  max?: Record<string, number | null>;
+  [key: string]: any;
+};
+
 export class HasuraGraphqlClient extends GraphQLClient {
   /**
    * @param config 配置对象
@@ -56,7 +69,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * @param params.data_fields 需要返回的字段 默认: "id" 如: "id,name,email"
    * @returns 返回的数据
    */
-  async data_by_pk<DataFieldsType = { id: PrimaryKey }>(
+  async data_by_pk<DataFieldsType = DefaultDataFieldsType>(
     params: DataByPkParams
   ): Promise<DataFieldsType> {
     const { table, args, data_fields = "id" } = params;
@@ -86,7 +99,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * @param params.datas_fields 需要返回的字段 默认: "id" 如: "id,name,email"
    * @returns 返回的数据
    */
-  async datas<DataFieldsType = { id: PrimaryKey }>(
+  async datas<DataFieldsType = DefaultDataFieldsType>(
     params: DatasParams
   ): Promise<DataFieldsType[]> {
     const { table, args, datas_fields = "id" } = params;
@@ -115,7 +128,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * @param params.data_fields 需要返回的字段 默认: "id" 如: "id,name,email"
    * @returns 返回的数据
    */
-  async data<DataFieldsType = { id: PrimaryKey }>(
+  async data<DataFieldsType = DefaultDataFieldsType>(
     params: DataParams
   ): Promise<DataFieldsType | undefined> {
     const { table, args, data_fields = "id" } = params;
@@ -138,7 +151,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * @param params.data_fields 需要返回的字段 默认: "id" 如: "id,name,email"
    * @returns 返回的数据
    */
-  async insert_data_one<DataFieldsType = { id: PrimaryKey }>(
+  async insert_data_one<DataFieldsType = DefaultDataFieldsType>(
     params: InsertDataOneParams
   ): Promise<DataFieldsType> {
     const { table, args, data_fields = "id" } = params;
@@ -175,7 +188,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * @param params.datas_fields 需要返回的字段 默认: "id" 如: "id,name,email"
    * @returns 返回的数据
    */
-  async insert_datas<DataFieldsType = { id: PrimaryKey }>(
+  async insert_datas<DataFieldsType = DefaultDataFieldsType>(
     params: InsertDatasParams
   ): Promise<DataFieldsType[]> {
     const { table, args, datas_fields = "id" } = params;
@@ -219,7 +232,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * @param params.data_fields 需要返回的字段 默认: "id" 如: "id,name,email"
    * @returns 返回的数据
    */
-  async update_data_by_pk<DataFieldsType = { id: PrimaryKey }>(
+  async update_data_by_pk<DataFieldsType = DefaultDataFieldsType>(
     params: UpdateDataByPkParams
   ): Promise<DataFieldsType> {
     const { table, args, data_fields = "id" } = params;
@@ -259,7 +272,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * @param params.datas_fields 需要返回的字段 默认: "id" 如: "id,name,email"
    * @returns 返回的数据
    */
-  async update_datas<DataFieldsType = { id: PrimaryKey }>(
+  async update_datas<DataFieldsType = DefaultDataFieldsType>(
     params: UpdateDatasParams
   ): Promise<DataFieldsType[]> {
     const { table, args, datas_fields = "id" } = params;
@@ -308,7 +321,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * @param params.datas_fields 需要返回的字段 默认: "id" 如: "id,name,email"
    * @returns 返回的数据
    */
-  async update_datas_many<DataFieldsType = { id: PrimaryKey }>(
+  async update_datas_many<DataFieldsType = DefaultDataFieldsType>(
     params: UpdateDatasManyParams
   ): Promise<DataFieldsType[][]> {
     const { table, args, datas_fields = "id" } = params;
@@ -341,7 +354,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * @param params.datas_fields 需要返回的字段 默认: "id" 如: "id,name,email"
    * @returns 返回的数据
    */
-  async delete_datas<DataFieldsType = { id: PrimaryKey }>(
+  async delete_datas<DataFieldsType = DefaultDataFieldsType>(
     params: DeleteDatasParams
   ): Promise<DataFieldsType[]> {
     const { table, args, datas_fields = "id" } = params;
@@ -364,7 +377,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
   }
 
   /**
-    * 根据 ID 删除单条数据 (对应graphql的mutation: delete_xxx_by_pk)
+   * 根据 ID 删除单条数据 (对应graphql的mutation: delete_xxx_by_pk)
    * @param params 入参对象
    * @param params.table 表名 必填 如: "users"
    * @param params.args 参数详情 如：{id:1}
@@ -372,7 +385,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * @param params.data_fields 需要返回的字段 默认: "id" 如: "id,name,email"
    * @returns 返回的数据
    */
-  async delete_data_by_pk<DataFieldsType = { id: PrimaryKey }>(
+  async delete_data_by_pk<DataFieldsType = DefaultDataFieldsType>(
     params: DeleteDataByPkParams
   ): Promise<DataFieldsType> {
     const { table, args, data_fields = "id" } = params;
@@ -425,8 +438,8 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * ```
    */
   async find<
-    DataFieldsType = { id: PrimaryKey },
-    AggregateFieldsType = { count: number }
+    DataFieldsType = DefaultDataFieldsType,
+    AggregateFieldsType = DefaultAggregateFieldsType
   >(
     params: FindParams
   ): Promise<{ list: DataFieldsType[]; aggregate: AggregateFieldsType }> {
@@ -493,7 +506,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
    * console.log(result); // { count: 1 }
    * ```
    */
-  async aggregate<AggregateFieldsType = { count: number }>(
+  async aggregate<AggregateFieldsType = DefaultAggregateFieldsType>(
     params: AggregateParams
   ): Promise<AggregateFieldsType> {
     const { table, args, aggregate_fields = "count" } = params;
@@ -519,4 +532,4 @@ export class HasuraGraphqlClient extends GraphQLClient {
 
 // 重新导出所有类型
 export * from "../../types/client/extend-client/HasuraGraphqlClient";
-export * from "../GraphQLClient"
+export * from "../GraphQLClient";

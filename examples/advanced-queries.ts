@@ -106,7 +106,7 @@ async function advancedQueriesExample() {
 
     // 4. 分页查询带聚合
     console.log("\n4. 分页查询带聚合");
-    const paginatedResult = await hasuraClient.find<User, any>({
+    const paginatedResult = await hasuraClient.find<User>({
       table: "users",
       page: 1,
       pageSize: 10,
@@ -128,7 +128,7 @@ async function advancedQueriesExample() {
         },
       ],
     });
-    console.log("分页结果:", paginatedResult);
+    console.log("分页结果:", paginatedResult.aggregate);
   } catch (error) {
     console.error("查询失败:", error);
   }
