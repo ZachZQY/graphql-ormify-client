@@ -4,17 +4,17 @@
 
 ## ✨ 特性
 
-- �� **类型安全**: 完整的 TypeScript 支持
+- ✨ **类型安全**: 完整的 TypeScript 支持
 - 🏗️ **灵活查询构建**: 支持复杂嵌套查询、别名、参数、指令
--  **跨平台兼容**: 支持微信小程序、Web 浏览器和 Node.js
+- 🐛 **跨平台兼容**: 支持微信小程序、Web 浏览器和 Node.js
 - ⚡ **高性能**: 优化的查询生成和执行
 - 🐛 **调试友好**: 内置调试模式和请求监听
 - 📦 **轻量级**: 无外部依赖
--  **双重模式**: 支持查询构建器和原始查询字符串
-- ️ **分层架构**: 清晰的代码复用结构
+- ✨ **双重模式**: 支持查询构建器和原始查询字符串
+- ️✨ **分层架构**: 清晰的代码复用结构
 - 🔐 **动态认证**: 支持运行时修改请求头和认证信息
--  **请求监控**: 完整的请求拦截和监听机制
--  **Hasura 集成**: 专门的 HasuraGraphqlClient 类
+- ✨ **请求监控**: 完整的请求拦截和监听机制
+- ✨ **Hasura 集成**: 专门的 HasuraGraphqlClient 类 适用于 Zion 和 Hasura 机制的 graphql
 
 ## 🚀 快速开始
 
@@ -27,72 +27,77 @@ npm install graphql-ormify-client
 ### 基本使用
 
 ```typescript
-import { GraphQLClient } from 'graphql-ormify-client';
+import { GraphQLClient } from "graphql-ormify-client";
 
 // 创建客户端
 const client = new GraphQLClient({
-  endpoint: 'https://api.example.com/graphql',
-  debug: true
+  endpoint: "https://api.example.com/graphql",
+  debug: true,
 });
 
 // 执行查询
 const result = await client.query({
-  operationName: 'GetUser',
+  operationName: "GetUser",
   fields: [
     {
-      name: 'users',
+      name: "users",
       args: {
-        where:{
-          id:{
-            _eq:() => "$id"
-          }
-        }
+        where: {
+          id: {
+            _eq: () => "$id",
+          },
+        },
       },
-      fields: ['id', 'nickname', 'avatar_url',{
-        name:'user_posts',
-        alias:"posts",
-        fields:`id title content`
-      }]
-    }
+      fields: [
+        "id",
+        "nickname",
+        "avatar_url",
+        {
+          name: "user_posts",
+          alias: "posts",
+          fields: `id title content`,
+        },
+      ],
+    },
   ],
   variableDefinitions: {
-    '$id': 'ID!'
+    $id: "ID!",
   },
   variables: {
-    id: '123'
-  }
+    id: "123",
+  },
 });
 ```
 
 ### Hasura 客户端使用
 
 ```typescript
-import { HasuraGraphqlClient } from 'graphql-ormify-client';
+import { HasuraGraphqlClient } from "graphql-ormify-client";
 
 // 创建 Hasura 客户端
 const hasuraClient = new HasuraGraphqlClient({
-  endpoint: 'https://your-hasura-endpoint.com/v1/graphql',
+  endpoint: "https://your-hasura-endpoint.com/v1/graphql",
   headers: {
-    'x-hasura-admin-secret': 'your-secret'
-  }
+    "x-hasura-admin-secret": "your-secret",
+  },
 });
 
 // 根据 ID 获取用户
 const user = await hasuraClient.data_by_pk<User>({
-  table: 'users',
-  args: { id: '123' },
-  data_fields: ['id', 'name', 'email']
+  table: "users",
+  args: { id: "123" },
+  data_fields: ["id", "name", "email"],
 });
 
 // 条件查询
 const users = await hasuraClient.datas<User>({
-  table: 'users',
+  table: "users",
   args: {
     where: { age: { _gte: 18 } },
-    order_by: { created_at: () => 'desc' },
-    limit: 10
+    order_by: { created_at: () => "desc" },
+    limit: 10,
   },
-  datas_fields: ['id', 'name', 'email', 'age']
+  datas_fields: ["id", "name", "email", "age"],
 });
 ```
 
@@ -142,13 +147,13 @@ new GraphQLClient(config: GraphQLClientConfig)
 - `find<TData, TAggregate>(params): Promise<{list: TData[], aggregate: TAggregate}>` - 分页查询
 - `aggregate<T>(params): Promise<T>` - 聚合查询
 
-##  支持的环境
+## 支持的环境
 
 - ✅ **微信小程序**: 使用 `wx.request` API
 - ✅ **Web 浏览器**: 使用 `fetch` API
 - ✅ **Node.js**: 使用 `fetch` API (Node.js 18+)
 
-##  安装
+## 安装
 
 ```bash
 # npm
@@ -161,13 +166,13 @@ yarn add graphql-ormify-client
 pnpm add graphql-ormify-client
 ```
 
-##  相关链接
+## 相关链接
 
 - [GitHub 仓库](https://github.com/ZachZQY/graphql-ormify-client)
 - [问题反馈](https://github.com/ZachZQY/graphql-ormify-client/issues)
 - [示例代码](./examples/)
 
-##  许可证
+## 许可证
 
 MIT License - 详见 [LICENSE](LICENSE) 文件
 
@@ -175,7 +180,7 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 欢迎提交 Issue 和 Pull Request！
 
-##  联系方式
+## 联系方式
 
 - 作者: ZachZQY
 - 邮箱: zhangquanyinhahaha@163.com

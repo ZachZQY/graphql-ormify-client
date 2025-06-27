@@ -1,6 +1,6 @@
 {
   "name": "graphql-ormify-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "一个强大的 GraphQL 客户端库，提供类型安全的查询构建和执行功能,目前已兼容 Hasura 和 和 Zion 的 GraphQL 服务",
   "main": "./dist/graphql-ormify-client.cjs",
   "module": "./dist/graphql-ormify-client.mjs",

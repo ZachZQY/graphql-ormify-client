@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-06-27
+
+### Changed
+- 新增 GraphQLClientError 错误类，抛出错误时包含 query、variables、data、errors 信息，便于调试和错误处理。 
+- 排序支持传入数组方式
+
 ## [1.0.0] - 2025-06-25
 
 ### Added
@@ -38,4 +44,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 模块化的代码架构
 - 支持多种构建格式（ESM、CommonJS、UMD）
 - 完整的测试覆盖
-- 详细的文档和示例 
+- 详细的文档和示例
