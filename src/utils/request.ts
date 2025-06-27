@@ -134,7 +134,20 @@ function processRequestBody(data: any, headers: Record<string, string>): any {
 /**
  * 兼容微信小程序和 fetch 的请求方法
  * @param config 请求配置
+ * @param config.url 请求 URL
+ * @param config.method 请求方法 默认 GET 可选 POST、PUT、DELETE、HEAD、OPTIONS、PATCH
+ * @param config.headers 请求头
+ * @param config.data 请求体数据
+ * @param config.timeout 请求超时时间
  * @returns 请求响应
+ * @example
+ * const response = await request({
+ *   url: "https://api.example.com",
+ *   method: "POST",
+ *   headers: { "Content-Type": "application/json" },
+ *   data: { id: 1 },
+ *   timeout: 30000,
+ * });
  */
 export function request<T = any>(config: RequestConfig): Promise<RequestResponse<T>> {
   const env = getEnv();
