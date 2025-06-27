@@ -3,6 +3,7 @@ declare const wx: any;
 
 /**
  * 获取当前运行环境
+ * @returns "WX-MINI" | "WEB" | "NODE"
  */
 function getEnv(): "WX-MINI" | "WEB" | "NODE" {
   if (
@@ -28,6 +29,14 @@ function getEnv(): "WX-MINI" | "WEB" | "NODE" {
 
 /**
  * 请求配置接口
+ * @example
+ * {
+ *   url: string;
+ *   method?: "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "OPTIONS" | "PATCH";
+ *   headers?: Record<string, string>;
+ *   data?: any;
+ *   timeout?: number;
+ * }
  */
 export interface RequestConfig {
   url: string;
@@ -39,6 +48,13 @@ export interface RequestConfig {
 
 /**
  * 请求响应接口
+ * @example
+ * {
+ *   data: any;
+ *   status: number;
+ *   statusText: string;
+ *   headers: Record<string, string>;
+ * }
  */
 export interface RequestResponse<T = any> {
   data: T;
@@ -49,6 +65,9 @@ export interface RequestResponse<T = any> {
 
 /**
  * 智能处理请求体数据
+ * @param data 请求体数据
+ * @param headers 请求头
+ * @returns 处理后的请求体数据
  */
 function processRequestBody(data: any, headers: Record<string, string>): any {
   // 如果没有数据，返回 undefined
@@ -114,6 +133,8 @@ function processRequestBody(data: any, headers: Record<string, string>): any {
 
 /**
  * 兼容微信小程序和 fetch 的请求方法
+ * @param config 请求配置
+ * @returns 请求响应
  */
 export function request<T = any>(config: RequestConfig): Promise<RequestResponse<T>> {
   const env = getEnv();

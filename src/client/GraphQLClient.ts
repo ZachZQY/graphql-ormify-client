@@ -1,8 +1,42 @@
-import { GraphQLBuilderCore,GraphQLFields,GraphQLOperation,OperationInput,OperationResult } from "../GraphQLBuilderCore";
+import {
+  GraphQLBuilderCore,
+  GraphQLFields,
+  GraphQLOperation,
+  OperationInput,
+  OperationResult,
+} from "../GraphQLBuilderCore";
 import { request, RequestResponse, RequestConfig } from "../utils/request";
-export type { RequestResponse, RequestConfig, GraphQLFields,GraphQLOperation,OperationInput,OperationResult };
+export type {
+  RequestResponse,
+  RequestConfig,
+  GraphQLFields,
+  GraphQLOperation,
+  OperationInput,
+  OperationResult,
+};
 /**
  * 请求生命周期事件
+ * @param id 请求唯一标识
+ * @param config 请求配置
+ * @param startTime 开始时间戳
+ * @param endTime 结束时间戳
+ * @param duration 耗时（毫秒）
+ * @param success 是否成功
+ * @param response 响应数据
+ * @param error 错误信息
+ * @param status 请求状态
+ * @example
+ * {
+ *   id: "req_1719638400000_1234567890",
+ *   config: { url: "https://api.example.com", method: "POST", headers: {}, data: { query: "query { users { id name } }", variables: {} } },
+ *   startTime: 1719638400000,
+ *   endTime: 1719638400000,
+ *   duration: 0,
+ *   success: true,
+ *   response: { data: { users: [{ id: 1, name: "Zach" }] } },
+ *   error: null,
+ *   status: "success",
+ * }
  */
 export interface RequestLifecycle {
   id: string; // 请求唯一标识
@@ -38,11 +72,48 @@ export interface RequestListener {
   onResponse?: (lifecycle: RequestLifecycle) => void | Promise<void>;
 }
 
+// 自定义 GraphQL 错误类
+export class GraphQLClientError extends Error {
+  query: string;
+  variables?: Record<string, any>;
+  errors: any[];
+  data?: any;
+  constructor(
+    message: string,
+    payload: {
+      query: string;
+      variables?: Record<string, any>;
+      data?: any;
+      errors: any[];
+    }
+  ) {
+    super(message || payload?.errors?.[0]?.message || "GraphQL errors");
+    this.name = "GraphQLClientError";
+    this.query = payload?.query;
+    this.variables = payload?.variables;
+    this.errors = payload?.errors;
+    this.data = payload?.data;
+  }
+}
+
 export class GraphQLClient extends GraphQLBuilderCore {
   private config: GraphQLClientConfig;
   private dynamicHeaders: Record<string, string> = {};
   private listeners: RequestListener[] = [];
 
+  /**
+   * 构造函数
+   * @param config 客户端配置，默认 timeout: 30000, debug: false
+   * @example
+   * const client = new GraphQLClient({
+   *   endpoint: "https://api.example.com",
+   *   headers: {
+   *     "Content-Type": "application/json",
+   *   },
+   *   timeout: 30000,
+   *   debug: false,
+   * });
+   */
   constructor(config: GraphQLClientConfig) {
     super();
     this.config = {
@@ -55,6 +126,17 @@ export class GraphQLClient extends GraphQLBuilderCore {
   /**
    * 添加请求监听器
    * @param listener 监听器对象
+   * @param listener.onRequest 请求开始时触发
+   * @param listener.onResponse 请求结束时触发
+   * @example
+   * client.addListener({
+   *   onRequest: (lifecycle) => {
+   *     console.log("Request:", lifecycle); //{id:req_1719638400000_1234567890,config:{url:https://api.example.com,method:POST,headers:{},data:{query:query { users { id name } },variables:{}},timeout:30000},startTime:1719638400000,status:pending}
+   *   },
+   *   onResponse: (lifecycle) => {
+   *     console.log("Response:", lifecycle); //{id:req_1719638400000_1234567890,config:{url:https://api.example.com,method:POST,headers:{},data:{query:query { users { id name } },variables:{}},timeout:30000},startTime:1719638400000,endTime:1719638400000,duration:0,success:true,response:{data:{users:{id:1,name:"Zach"}},status:200,statusText:"OK",headers:{}},status:success}
+   *   },
+   * });
    */
   addListener(listener: RequestListener): void {
     this.listeners.push(listener);
@@ -176,7 +258,7 @@ export class GraphQLClient extends GraphQLBuilderCore {
       }
     } catch (err) {
       if (this.config.debug) {
-        console.warn("Listener error:", err);
+        console.error("Listener error:", err);
       }
     }
   }
@@ -184,6 +266,22 @@ export class GraphQLClient extends GraphQLBuilderCore {
   /**
    * 通用 HTTP 请求方法
    * 支持微信小程序、Web 和 Node.js 环境
+   * @param config 请求配置
+   * @returns 请求响应
+   * @example
+   * const response = await client.request({
+   *   url: "https://api.example.com",
+   *   method: "POST",
+   *   headers: {
+   *     "Content-Type": "application/json",
+   *   },
+   *   data: {
+   *     id: 1,
+   *   },
+   *   timeout: 30000,
+   * });
+   * console.log(response);
+   * //{data:{id:1},status:200,statusText:"OK",headers:{}}
    */
   async request<T = any>(config: RequestConfig): Promise<RequestResponse<T>> {
     const requestId = this.generateRequestId();
@@ -239,8 +337,24 @@ export class GraphQLClient extends GraphQLBuilderCore {
   }
 
   /**
-   * 执行 GraphQL 操作
-   * 直接传入 GraphQL 查询字符串，支持 query、mutation、subscription 等所有操作
+   * 执行 GraphQL 操作,直接传入 GraphQL 查询字符串，支持 query、mutation、subscription 等所有操作
+   * @param query  GraphQL 查询字符串
+   * @param variables 查询变量
+   * @returns 查询结果
+   * @example
+   * const result = await client.execute(
+   * {
+   *   query: `
+   *     query GetUser($id: Int!) {
+   *       users(where: {id: {_eq: $id}}) {
+   *         id
+   *         name
+   *       }
+   *     }
+   *   `,
+   *   variables: { id: 1 },
+   * });
+   * console.log(result.users);
    */
   async execute<T = any>(
     query: string,
@@ -252,7 +366,7 @@ export class GraphQLClient extends GraphQLBuilderCore {
     };
 
     try {
-      const response: RequestResponse<{ data?: T; errors?: any[] }> =
+      const requestResponse: RequestResponse<{ data?: T; errors?: any[] }> =
         await this.request({
           url: this.config.endpoint,
           method: "POST",
@@ -264,17 +378,18 @@ export class GraphQLClient extends GraphQLBuilderCore {
           timeout: this.config.timeout,
         });
 
-      const result = response.data;
+      const graphqlResponse = requestResponse.data;
 
-      if (result.errors) {
-        throw new Error(`GraphQL errors: ${JSON.stringify(result.errors)}`);
+      if (graphqlResponse.errors) {
+        throw new GraphQLClientError(graphqlResponse?.errors?.[0]?.message, {
+          query,
+          variables,
+          data: graphqlResponse.data,
+          errors: graphqlResponse.errors,
+        });
       }
-
-      return result.data as T;
+      return graphqlResponse.data as T;
     } catch (error: any) {
-      if (this.config.debug) {
-        console.error("GraphQL execute failed:", error);
-      }
       throw error;
     }
   }
@@ -282,6 +397,29 @@ export class GraphQLClient extends GraphQLBuilderCore {
   /**
    * 执行 GraphQL 查询
    * 使用查询构建器生成查询语句，然后复用 execute
+   * @param input 查询构建器输入参数
+   * @returns 查询结果
+   * @example
+   * const result = await client.query({
+   *   oprationName: "GetUser",
+   *   fields: [{
+   *     name: "users",
+   *     fields: ["id", "name"],
+   *     args: {
+   *       where: {
+   *         id: { _eq: ()=>'$id' },
+   *         name: { _eq: "Zach" },
+   *       },
+   *     },
+   *   }],
+   *   variables: {
+   *     id: 1,
+   *   },
+   *   variableDefinitions: {
+   *     id: "Int!",
+   *   },
+   * });
+   * console.log(result.users[0].id);
    */
   async query<T = any>(
     input: Omit<Parameters<typeof this.buildQuery>[0], "operationType">
@@ -293,6 +431,31 @@ export class GraphQLClient extends GraphQLBuilderCore {
   /**
    * 执行 GraphQL 变更
    * 使用查询构建器生成变更语句，然后复用 execute
+   * @param input 变更构建器输入参数
+   * @returns 变更结果
+   * @example
+   * const result = await client.mutate({
+   *   operationName: "CreateUser",
+   *   fields: [{
+   *     name: "insert_users_one",
+   *     fields: ["affected_rows"],
+   *     args: {
+   *       object: {
+   *         name: "Zach",
+   *         email: "zach@example.com",
+   *       },
+   *     },
+   *   }],
+   *   variables: {
+   *     name: "Zach",
+   *     email: "zach@example.com",
+   *   },
+   *   variableDefinitions: {
+   *     name: "String!",
+   *     email: "String!",
+   *   },
+   * });
+   * console.log(result.insert_users_one.affected_rows);
    */
   async mutate<T = any>(
     input: Omit<Parameters<typeof this.buildMutation>[0], "operationType">
