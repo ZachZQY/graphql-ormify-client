@@ -356,10 +356,13 @@ export class GraphQLClient extends GraphQLBuilderCore {
    * });
    * console.log(result.users);
    */
-  async execute<T = any>(
-    query: string,
-    variables?: Record<string, any>
-  ): Promise<T> {
+  async execute<T = any>({
+    query,
+    variables,
+  }: {
+    query: string;
+    variables?: Record<string, any>;
+  }): Promise<T> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       ...this.getHeaders(),
@@ -425,7 +428,10 @@ export class GraphQLClient extends GraphQLBuilderCore {
     input: Omit<Parameters<typeof this.buildQuery>[0], "operationType">
   ): Promise<T> {
     const operation: OperationResult = this.buildQuery(input);
-    return this.execute<T>(operation.query, operation.variables);
+    return this.execute<T>({
+      query: operation.query,
+      variables: operation.variables,
+    });
   }
 
   /**
@@ -461,7 +467,10 @@ export class GraphQLClient extends GraphQLBuilderCore {
     input: Omit<Parameters<typeof this.buildMutation>[0], "operationType">
   ): Promise<T> {
     const operation = this.buildMutation(input);
-    return this.execute<T>(operation.query, operation.variables);
+    return this.execute<T>({
+      query: operation.query,
+      variables: operation.variables,
+    });
   }
 
   /**

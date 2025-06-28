@@ -451,6 +451,12 @@ export class HasuraGraphqlClient extends GraphQLClient {
       datas_fields = "id",
       aggregate_fields = "count",
     } = params;
+    // 校验参数
+    if (page < 1 || pageSize < 1) {
+      throw new Error(
+        `page 和 pageSize 不能小于1,page:${page},pageSize:${pageSize}`
+      );
+    }
     const offset = (page - 1) * pageSize;
     const listArgs = { ...args, limit: pageSize, offset };
     const aggregateArgs = { where: args?.where };
