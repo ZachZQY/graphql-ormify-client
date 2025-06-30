@@ -459,7 +459,10 @@ export class HasuraGraphqlClient extends GraphQLClient {
     }
     const offset = (page - 1) * pageSize;
     const listArgs = { ...args, limit: pageSize, offset };
-    const aggregateArgs = { where: args?.where };
+    const aggregateArgs = {
+      where: args?.where,
+      distinct_on: args?.distinct_on,
+    };
     const operationName = `Find${table}`;
 
     // 将两个查询合并为一个请求
