@@ -127,16 +127,17 @@ new GraphQLClient(config: GraphQLClientConfig)
 
 - `query<T>(input): Promise<T>` - 执行查询操作
 - `mutate<T>(input): Promise<T>` - 执行变更操作
-- `execute<T>(query, variables?): Promise<T>` - 执行原始 GraphQL 查询
+- `execute<T>({query, variables?}): Promise<T>` - 执行原始 GraphQL 查询
 - `request<T>(config): Promise<RequestResponse<T>>` - 通用 HTTP 请求
 
 ### HasuraGraphqlClient
 
 专门为 Hasura GraphQL Engine 设计的客户端，提供便捷的 CRUD 操作。
 
-#### 主要方法
+#### 快捷方法
 
 - `data_by_pk<T>(params): Promise<T>` - 根据主键获取单条数据
+- `data<T>(params): Promise<T>` - 根据条件获取单条数据
 - `datas<T>(params): Promise<T[]>` - 根据条件获取多条数据
 - `insert_data_one<T>(params): Promise<T>` - 插入单条数据
 - `insert_datas<T>(params): Promise<T[]>` - 批量插入数据
