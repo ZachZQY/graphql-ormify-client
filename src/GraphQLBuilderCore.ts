@@ -1,4 +1,8 @@
-import { GraphQLFields, OperationInput, OperationResult } from "./types/GraphQLBuilderCore";
+import {
+  GraphQLFields,
+  OperationInput,
+  OperationResult,
+} from "./types/GraphQLBuilderCore";
 
 /**
  * GraphQL 核心抽象类
@@ -37,7 +41,12 @@ export abstract class GraphQLBuilderCore {
       // 处理指令
       if (fields.directives && fields.directives.length > 0) {
         fieldString += ` ${fields.directives
-          .map((directive) => this.serializeDirective(directive))
+          .map((directive) =>
+            this.serializeDirective({
+              ...directive,
+              args: directive.args as Record<string, any>,
+            })
+          )
           .join(" ")}`;
       }
 

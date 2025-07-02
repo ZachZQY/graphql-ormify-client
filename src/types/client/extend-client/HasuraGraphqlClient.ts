@@ -317,10 +317,13 @@ export interface DataByPkParams {
  *  }
  * ]
  */
-export interface DatasParams {
+export interface DatasParams<
+  DataFieldsType extends GraphQLFields = DataFields,
+  ArgsType extends Record<string, any> = QueryArgs
+> {
   table: TableName;
-  args: QueryArgs;
-  datas_fields: DataFields; // GraphQLFields
+  args?: ArgsType;
+  datas_fields: DataFieldsType; // GraphQLFields
 }
 
 /**
@@ -337,7 +340,7 @@ export interface DatasParams {
  */
 export interface DataParams {
   table: TableName;
-  args: QueryArgs;
+  args?: QueryArgs;
   data_fields: DataFields; // GraphQLFields
 }
 

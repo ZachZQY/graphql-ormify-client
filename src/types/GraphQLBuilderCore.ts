@@ -7,7 +7,7 @@
  */
 export interface GraphQLDirective {
   name: string;
-  args?: Record<string, any>;
+  args?: unknown;
 }
 
 /**
@@ -21,7 +21,7 @@ export interface GraphQLDirective {
 export interface GraphQLField {
   alias?: string;
   name: string;
-  args?: Record<string, any>;
+  args?: unknown;
   directives?: GraphQLDirective[];
   fields?: GraphQLFields;
 }

@@ -1,5 +1,10 @@
 // 声明微信小程序全局变量
 declare const wx: any;
+// 声明node环境全局变量
+declare const global: any;
+declare const process: any;
+// 声明浏览器环境全局变量
+declare const window: any;
 
 /**
  * 获取当前运行环境
@@ -230,14 +235,20 @@ export function request<T = any>(config: RequestConfig): Promise<RequestResponse
               data,
               status: response.status,
               statusText: response.statusText,
-              headers: Object.fromEntries(response.headers.entries())
+              headers: Array.from(response.headers.entries()).reduce((acc, [k, v]) => {
+                acc[k] = v;
+                return acc;
+              }, {} as Record<string, string>)
             }));
           } else {
             return response.text().then((data) => ({
               data,
               status: response.status,
               statusText: response.statusText,
-              headers: Object.fromEntries(response.headers.entries())
+              headers: Array.from(response.headers.entries()).reduce((acc, [k, v]) => {
+                acc[k] = v;
+                return acc;
+              }, {} as Record<string, string>)
             }));
           }
         })
