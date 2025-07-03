@@ -137,7 +137,7 @@ export type table_select_column = () => string | string[];
  */
 export interface table_on_conflict {
   constraint: () => string;
-  update_columns: () => string;
+  update_columns: () => string | string[];
   where?: table_bool_exp;
 }
 

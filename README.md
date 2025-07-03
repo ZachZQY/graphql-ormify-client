@@ -1,5 +1,13 @@
 # GraphQL ORMify Client
 
+> **项目集成规范**
+>
+> 本项目所有请求都尽量通过 [graphql-ormify-client](https://www.npmjs.com/package/graphql-ormify-client) 进行处理，不建议直接使用 fetch/axios/wx.request 等原生请求方式。
+>
+> 推荐优先使用快捷方法处理数据表相关逻辑，无法满足时可用 query/mutate，特殊场景可用 excute。
+
+---
+
 一个强大的 GraphQL 客户端库，提供类型安全的查询构建和执行功能，支持微信小程序、Web 和 Node.js 环境。
 
 ## ✨ 特性
@@ -101,6 +109,61 @@ const users = await hasuraClient.datas<User>({
 });
 ```
 
+## 🛠️ 用法规范与示例
+
+### 准备工作
+
+```typescript
+import { HasuraGraphqlClient } from "graphql-ormify-client";
+
+const hasuraClient = new HasuraGraphqlClient({
+  endpoint: "https://your-hasura-endpoint.com/v1/graphql",
+  headers: {
+    "x-hasura-admin-secret": "your-secret",
+  },
+});
+```
+
+### 一、基础方法
+
+- 发送 query：`hasuraClient.query`
+- 发送 mutation：`hasuraClient.mutate`
+- 直接运行 GraphQL 语句：`hasuraClient.excute`
+
+**参数说明：**
+- query/mutate：`{ operationName, fields, variableDefinitions, variables }`
+- excute：`{ query, variables }`
+
+### 二、快捷方法（推荐优先使用）
+
+- 通过主键查询：`data_by_pk`
+- 条件查询多条：`datas`
+- 条件查询单条 `data`
+- 写入单条：`insert_data_one`
+- 写入多条：`insert_datas`
+- 通过主键更新：`update_data_by_pk`
+- 相同内容条件批量更新：`update_datas`
+- 不同内容条件批量更新 `update_datas_many`
+- 通过主键删除：`delete_data_by_pk`
+- 分页与聚合查询：`find`
+- 聚合查询：`aggregate`
+
+**参数说明：**
+- 公共参数：`{ table, args, data_fields | datas_fields }`
+- 特殊参数：
+  - aggregate：`{ aggregate_fields }`
+  - find：`{ page, pageSize, aggregate_fields }`
+
+> 快捷方法基本能满足数据表相关的所有查询，优先使用。若无法满足，可用 query/mutate，若能确定类型结构，也可用 excute。
+
+### 三、特别注意
+
+- 对于部分 GraphQL 语句需要传入枚举参数或变量时，生成器通过"参数为函数"来区分：
+  - 错误写法：`order_by: { id: desc }`（会报 desc 未定义）
+  - 错误写法：`order_by: { id: "desc" }`（gql 不符合期待）
+  - 正确写法：`order_by: { id: () => "desc" }`
+  - 生成器遇到函数参数时，会调用函数并将结果作为不带引号的内容片段插入 gql 语句。
+
 ## 📚 文档
 
 详细文档请查看 [examples](./examples/) 目录中的示例文件：
@@ -143,6 +206,7 @@ new GraphQLClient(config: GraphQLClientConfig)
 - `insert_datas<T>(params): Promise<T[]>` - 批量插入数据
 - `update_data_by_pk<T>(params): Promise<T>` - 根据主键更新数据
 - `update_datas<T>(params): Promise<T[]>` - 根据条件更新数据
+= `update_datas_many<T>(params): Promise<T[]>` - 根据条件更新数据（可传入不同内容）
 - `delete_data_by_pk<T>(params): Promise<T>` - 根据主键删除数据
 - `delete_datas<T>(params): Promise<T[]>` - 根据条件删除数据
 - `find<TData, TAggregate>(params): Promise<{list: TData[], aggregate: TAggregate}>` - 分页查询
