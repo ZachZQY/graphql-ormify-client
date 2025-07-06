@@ -44,6 +44,7 @@ function getEnv(): "WX-MINI" | "WEB" | "NODE" {
  * }
  */
 export interface RequestConfig {
+  isGraphqlEndpoint?: boolean;
   url: string;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "OPTIONS" | "PATCH";
   headers?: Record<string, string>;

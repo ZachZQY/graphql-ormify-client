@@ -290,7 +290,7 @@ export class GraphQLClient extends GraphQLBuilderCore {
     // 创建生命周期对象
     const lifecycle: RequestLifecycle = {
       id: requestId,
-      config: { ...config },
+      config: { ...JSON.parse(JSON.stringify(config)) },
       startTime,
       status: "pending",
     };
@@ -302,7 +302,7 @@ export class GraphQLClient extends GraphQLBuilderCore {
 
     try {
       // 执行实际请求
-      const response = await request<T>(config);
+      const response = await request<T>(lifecycle.config);
 
       // 更新生命周期信息
       const endTime = Date.now();
@@ -371,6 +371,7 @@ export class GraphQLClient extends GraphQLBuilderCore {
     try {
       const requestResponse: RequestResponse<{ data?: T; errors?: any[] }> =
         await this.request({
+          isGraphqlEndpoint: true,
           url: this.config.endpoint,
           method: "POST",
           headers,
