@@ -162,7 +162,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
       fields: {
         name: mutationName,
         args: {
-          object: () => "$object",
+          ...(args?.object ? { object: () => "$object" } : {}),
           ...Object.keys(args).reduce((acc, key) => {
             if (key !== "object") {
               acc[key] = args[key as keyof typeof args];
@@ -172,8 +172,10 @@ export class HasuraGraphqlClient extends GraphQLClient {
         },
         fields: data_fields,
       },
-      variableDefinitions: { $object: `${table}_insert_input!` },
-      variables: { object: args.object },
+      variableDefinitions: {
+        ...(args?.object ? { $object: `${table}_insert_input!` } : {}),
+      },
+      variables: { ...(args?.object ? { object: args.object } : {}) },
     });
     return result[mutationName];
   }
@@ -201,7 +203,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
       fields: {
         name: mutationName,
         args: {
-          objects: () => "$objects",
+          ...(args?.objects ? { objects: () => "$objects" } : {}),
           ...Object.keys(args).reduce((acc, key) => {
             if (key !== "objects") {
               acc[key] = args[key as keyof typeof args];
@@ -214,8 +216,10 @@ export class HasuraGraphqlClient extends GraphQLClient {
           fields: datas_fields,
         },
       },
-      variableDefinitions: { $objects: `[${table}_insert_input!]!` },
-      variables: { objects: args.objects },
+      variableDefinitions: {
+        ...(args?.objects ? { $objects: `[${table}_insert_input!]!` } : {}),
+      },
+      variables: { ...(args?.objects ? { objects: args.objects } : {}) },
     });
     return result[mutationName].returning;
   }
@@ -243,7 +247,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
       fields: {
         name: mutationName,
         args: {
-          _set: () => "$_set",
+          ...(args?._set ? { _set: () => "$_set" } : {}),
           ...Object.keys(args).reduce((acc, key) => {
             if (key !== "_set") {
               acc[key] = args[key as keyof typeof args];
@@ -254,9 +258,9 @@ export class HasuraGraphqlClient extends GraphQLClient {
         fields: data_fields,
       },
       variableDefinitions: {
-        $_set: `${table}_set_input!`,
+        ...(args?._set ? { $_set: `${table}_set_input!` } : {}),
       },
-      variables: { _set: args._set },
+      variables: { ...(args?._set ? { _set: args._set } : {}) },
     });
     return result?.[mutationName];
   }
@@ -285,7 +289,7 @@ export class HasuraGraphqlClient extends GraphQLClient {
       fields: {
         name: mutationName,
         args: {
-          _set: () => "$_set",
+          ...(args?._set ? { _set: () => "$_set" } : {}),
           // 排除_set后的其他参数
           ...Object.keys(args).reduce((acc, key) => {
             if (key !== "_set") {
@@ -300,10 +304,10 @@ export class HasuraGraphqlClient extends GraphQLClient {
         },
       },
       variableDefinitions: {
-        $_set: `${table}_set_input!`,
+        ...(args?._set ? { $_set: `${table}_set_input!` } : {}),
       },
       variables: {
-        _set: args?._set,
+        ...(args?._set ? { _set: args._set } : {}),
       },
     });
     return result?.[mutationName]?.returning;
@@ -333,14 +337,18 @@ export class HasuraGraphqlClient extends GraphQLClient {
       operationName,
       fields: {
         name: mutationName,
-        args: { updates: () => "$updates" },
+        args: {
+          ...(args?.updates ? { updates: () => "$updates" } : {}),
+        },
         fields: {
           name: "returning",
           fields: datas_fields,
         },
       },
-      variableDefinitions: { $updates: `[${table}_updates!]!` },
-      variables: { updates: args.updates },
+      variableDefinitions: {
+        ...(args?.updates ? { $updates: `[${table}_updates!]!` } : {}),
+      },
+      variables: { ...(args?.updates ? { updates: args.updates } : {}) },
     });
     return result[mutationName].map((item) => item.returning);
   }
